@@ -1,0 +1,12 @@
+{
+  "farm": {
+    "workerOptions": {},
+    "maxCallsPerWorker": -1,
+    "maxConcurrentWorkers": 1,
+    "maxConcurrentCallsPerWorker": 10,
+    "maxConcurrentCalls": -1,
+    "maxCallTime": -1,
+    "maxRetries": -1,
+    "autoStart": false
+  }
+}

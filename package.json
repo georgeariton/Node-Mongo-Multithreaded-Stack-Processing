@@ -1,0 +1,30 @@
+{
+  "name": "node-mongo-multithreaded-stack-processing",
+  "version": "0.0.1",
+  "description": "Node MongDB Multi-Threaded Stack Processing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "listen": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgeariton/Node-Mongo-Multithreaded-Stack-Processing.git"
+  },
+  "keywords": [
+    "Node",
+    "Mongo",
+    "Worker",
+    "Farm"
+  ],
+  "author": "George Ariton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/georgeariton/Node-Mongo-Multithreaded-Stack-Processing/issues"
+  },
+  "homepage": "https://github.com/georgeariton/Node-Mongo-Multithreaded-Stack-Processing#readme",
+  "dependencies": {
+    "mongoose": "^5.10.0",
+    "worker-farm": "^1.7.0"
+  }
+}
