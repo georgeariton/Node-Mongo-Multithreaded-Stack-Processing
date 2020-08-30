@@ -1,0 +1,18 @@
+{
+  "name": "onpageseo",
+  "version": "0.0.1",
+  "description": "An example integration of multi threadded processing",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "George Ariton",
+  "license": "MIT",
+  "dependencies": {
+    "@meanie/mongoose-upsert-many": "^2.1.0",
+    "escape-string-regexp": "^4.0.0",
+    "jsdom": "^16.4.0",
+    "node-fetch": "^2.6.0",
+    "yargs": "^15.4.1"
+  }
+}

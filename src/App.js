@@ -1,20 +1,31 @@
-const {connection: mongoConnection, options: mongoOptions} = require(__dirname + "/config/mongo.json");
-const {farm: farmOptions} = require(__dirname + "/config/worker-farm.json");
 const MongoHandler = require(__dirname + "/MongoHandler.js");
 const StackHandler = require(__dirname + "/StackHandler.js");
 
 /**
- * Main application
+ * @class App
+ *
+ * @classdesc Main application class, this will handle MongoDB (mongoose in our case) and the Worker Farm
  */
 class App
 {
-    constructor(childScript, processHandled)
+    /**
+     * @param childScript
+     * @param options
+     * @param processHandledCallback
+     */
+    constructor(childScript, options = {}, processHandledCallback = function() {})
     {
+        // Options
+        let mongoConnection = options.mongoConnection || {};
+        let mongoOptions = options.mongoOptions || {};
+        let farmOptions = options.farmOptions || {};
+
+
         // Mongo model instance, this will hold all of the processes, running or otherwise
         this.mongoModel = null;
 
         // Callback function to be called when a process done
-        this.processHandled = processHandled;
+        this.processHandled = processHandledCallback;
 
         // The "setInterval" instance so it can be closed
         this.listenInterval = 0;
@@ -38,7 +49,8 @@ class App
     }
 
     /**
-     * Main polling function
+     * @function listen
+     * @desc Main polling function
      */
     listen()
     {
@@ -53,33 +65,51 @@ class App
     }
 
     /**
-     * Handle queued items in the collection
+     * @function handleQueuedDocs
+     *
+     * @desc Handle queued items in the collection
      *
      * @param err
      * @param docs
      */
     handleQueuedDocs(err, docs)
     {
+        // Just ignore errors
+        // @TODO: Better error handling
         if (err) return;
 
-        docs.forEach((doc) => {
+        // Handle each of the queued docs
+        docs.forEach(async (doc) => {
+            // Change status to processing so that we know which of the inputs we are handling
+            doc.status = "processing";
+            await doc.save();
+
+            // Enqueue the process to the stack
             this.stackHandler.enqueueProcesses({
-                counter: ++this.counter,
-                doc: doc.toObject()
-            }, this.childOutput.bind(this));
+                counter: ++this.counter, // debug counter so we can see that the processes are actually working
+                doc: doc.toObject() // send the doc as a "JSON" string to the child script
+            }, (err, data) => {
+                // Handle the output of the child script
+                this.childOutput(err, data)
+            });
         });
     }
 
     /**
-     * Handle the callback sent to the child script
+     * @function childOutput
      *
+     * @desc Handle the callback sent to the child script
+     *
+     * @param err
      * @param data
      * @returns {boolean}
      */
-    childOutput(data)
+    childOutput(err, data)
     {
-        this.mongoModel.findByIdAndUpdate(data.doc._id, {"status": "done"}, {}, () => {
-            this.processHandled(data);
+        // Update the input so we know when everything is done
+        this.mongoModel.findByIdAndUpdate(data.processor.doc._id, {"status": "done"}, {}, () => {
+            // Call the callback with the correct parameters
+            this.processHandled(err, data);
         });
     }
 }
