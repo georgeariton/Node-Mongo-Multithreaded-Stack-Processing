@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/georgeariton/Node-Mongo-Multithreaded-Stack-Processing#readme",
   "dependencies": {
-    "mongoose": "^5.10.0",
+    "mongoose": "^9.0.2",
     "worker-farm": "^1.7.0"
   }
 }
